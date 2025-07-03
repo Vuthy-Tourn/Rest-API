@@ -15,23 +15,28 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CourseController {
     private final CourseService courseService;
-//    @GetMapping
-//    public List<CourseResponse> getAllCoursesByStatus(@RequestParam( required = false, defaultValue = "true") Boolean status) {
-//        return courseService.getAllCourses(status);
-//    }
-
+    // get course by status
     @GetMapping
-    public List<CourseResponse> getCourses(@RequestParam( required = false, defaultValue = "true") Boolean status,
-                                                   @RequestParam( required = false, defaultValue = "") String title) {
-        return courseService.getCourses(status, title);
-
+    public List<CourseResponse> getAllCoursesByStatus(@RequestParam( required = false, defaultValue = "true") Boolean status) {
+        return courseService.getAllCourses(status);
     }
 
+    // get course by status and title
+    @GetMapping(params = { "title" })
+    public List<CourseResponse> getCoursesByStatusAndTitle(
+            @RequestParam( required = false, defaultValue = "true") Boolean status,
+            @RequestParam String title) {
+
+        return courseService.getCourses(status, title);
+    }
+
+    // get course by code
     @GetMapping("/{code}")
     public CourseResponse getCourseByCode(@PathVariable String code){
         return courseService.getCourseByCode(code);
     }
 
+    // get course by id
     @GetMapping("/{id}")
     public CourseResponse getCourseById(@PathVariable String id){
         return courseService.getCourseById(id);

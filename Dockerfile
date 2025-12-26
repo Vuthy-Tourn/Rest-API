@@ -12,7 +12,7 @@ COPY build.gradle settings.gradle ./
 COPY src src
 
 # Build Spring Boot jar
-RUN ./gradlew clean bootJar --no-daemon
+RUN gradle clean bootJar --no-daemon
 
 
 # ===== Stage 2: Run =====

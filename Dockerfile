@@ -1,5 +1,5 @@
 # ===== Stage 1: Build =====
-FROM gradle:8.5-jdk17-alpine AS build
+FROM gradle:8.5-jdk21-alpine AS build
 
 WORKDIR /home/gradle/project
 

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.vuthy.restapi.RestApiApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-12-26T01:22:37.106Z" hostname="vuthytourn.local" time="0.305">
+  <properties/>
+  <testcase name="contextLoads()" classname="com.vuthy.restapi.RestApiApplicationTests" time="0.305"/>
+  <system-out><![CDATA[08:22:36.575 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.vuthy.restapi.RestApiApplicationTests]: RestApiApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+08:22:36.606 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.vuthy.restapi.RestApiApplication for test class com.vuthy.restapi.RestApiApplicationTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.3)
+
+2025-12-26T08:22:36.721+07:00  INFO 80568 --- [rest-api] [    Test worker] c.vuthy.restapi.RestApiApplicationTests  : Starting RestApiApplicationTests using Java 21.0.9 with PID 80568 (started by macbookpro in /Users/macbookpro/Desktop/ISTAD/Full-Stack/Spring/rest-api)
+2025-12-26T08:22:36.721+07:00  INFO 80568 --- [rest-api] [    Test worker] c.vuthy.restapi.RestApiApplicationTests  : No active profile set, falling back to 1 default profile: "default"
+2025-12-26T08:22:37.103+07:00  INFO 80568 --- [rest-api] [    Test worker] c.vuthy.restapi.RestApiApplicationTests  : Started RestApiApplicationTests in 0.457 seconds (process running for 0.791)
+]]></system-out>
+  <system-err><![CDATA[Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (/Users/macbookpro/.gradle/caches/modules-2/files-2.1/net.bytebuddy/byte-buddy-agent/1.17.6/17b32fd9f57deef02842f7f05abc4ad8127fe34e/byte-buddy-agent-1.17.6.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+</testsuite>

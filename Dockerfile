@@ -1,28 +1,28 @@
 # ===== Stage 1: Build =====
-FROM gradle:8.5-jdk21-alpine AS build
+FROM gradle:8.5-jdk21 AS build
 
 WORKDIR /home/gradle/project
 
-# Copy gradle files first (better cache)
-COPY build.gradle settings.gradle gradlew ./
+# Copy Gradle wrapper and config first (cache-friendly)
+COPY gradlew .
 COPY gradle gradle
+COPY build.gradle settings.gradle ./
 
-# Download dependencies (cached layer)
+# Download dependencies
 RUN ./gradlew dependencies --no-daemon
 
 # Copy source code
 COPY src src
 
-# Build the application
+# Build Spring Boot jar
 RUN ./gradlew clean bootJar --no-daemon
 
 
 # ===== Stage 2: Run =====
-FROM eclipse-temurin:17-jdk-alpine
+FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
-# Copy jar from build stage
 COPY --from=build /home/gradle/project/build/libs/*.jar app.jar
 
 EXPOSE 8080

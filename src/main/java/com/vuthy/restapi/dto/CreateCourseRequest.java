@@ -3,10 +3,9 @@ package com.vuthy.restapi.dto;
 import lombok.Builder;
 
 @Builder
-public record CourseResponse(
+public record CreateCourseRequest(
         String code,
         String title,
-        Double price,
-        Boolean status
+        Double price
 ) {
 }

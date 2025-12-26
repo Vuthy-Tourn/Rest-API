@@ -1,20 +1,21 @@
 package com.vuthy.restapi.controller;
 
-import com.vuthy.restapi.domain.Course;
 import com.vuthy.restapi.dto.CourseResponse;
+import com.vuthy.restapi.dto.CreateCourseRequest;
 import com.vuthy.restapi.service.CourseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
 @RestController
 @RequestMapping("/api/v1/courses")
 @RequiredArgsConstructor
 public class CourseController {
     private final CourseService courseService;
+
     // get course by status
     @GetMapping
     public List<CourseResponse> getAllCoursesByStatus(@RequestParam( required = false, defaultValue = "true") Boolean status) {
@@ -40,5 +41,19 @@ public class CourseController {
     @GetMapping("/{id}")
     public CourseResponse getCourseById(@PathVariable String id){
         return courseService.getCourseById(id);
+    }
+
+    // Create course
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
+    public CourseResponse createCourse(@RequestBody CreateCourseRequest createCourseRequest){
+        return courseService.createCourse(createCourseRequest);
+    }
+
+    // Delete course
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{code}")
+    public void deleteCourse(@PathVariable String code){
+        courseService.deleteCourse(code);
     }
 }

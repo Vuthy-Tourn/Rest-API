@@ -1,12 +1,17 @@
 package com.vuthy.restapi.service.impl;
 
+import com.vuthy.restapi.domain.Course;
 import com.vuthy.restapi.dto.CourseResponse;
+import com.vuthy.restapi.dto.CreateCourseRequest;
 import com.vuthy.restapi.repository.CourseRepository;
 import com.vuthy.restapi.service.CourseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -78,5 +83,50 @@ public class CourseServiceImpl implements CourseService {
                 .findFirst()
                 .orElse(null);
         return filteredById;
+    }
+
+    @Override
+    public CourseResponse createCourse(CreateCourseRequest createCourseRequest) {
+        boolean isCourseExisted = courseRepository.getCourses()
+                .stream()
+                .anyMatch(course -> course.getCode().equals(createCourseRequest.code()));
+
+        if (isCourseExisted) {
+            // Conflict
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Course already exists");
+        }
+
+        // Map from dto to domain model
+        Course course = Course.builder()
+                .id(UUID.randomUUID().toString())
+                .code(createCourseRequest.code())
+                .title(createCourseRequest.title())
+                .price(createCourseRequest.price())
+                .status(false)
+                .build();
+
+        courseRepository.getCourses().add(course);
+
+        // Return - map from domain model to dto
+        return CourseResponse.builder()
+                .code(course.getCode())
+                .title(course.getTitle())
+                .price(course.getPrice())
+                .status(false)
+                .build();
+    }
+
+    @Override
+    public void deleteCourse(String code) {
+        boolean isCourseExisted = courseRepository.getCourses()
+                .stream()
+                .anyMatch(course -> course.getCode().equals(code));
+
+        if (!isCourseExisted) {
+            // Not found
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course code doesn't exist");
+        }
+        courseRepository.getCourses().removeIf(course->course.getCode().equals(code));
+
     }
 }

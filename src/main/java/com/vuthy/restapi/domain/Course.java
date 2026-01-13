@@ -1,5 +1,6 @@
 package com.vuthy.restapi.domain;
 
+import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
@@ -7,11 +8,21 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "courses")
 public class Course {
-    private String id;
-    private String code;
-    private String title;
-    private Double price;
-    private Boolean status;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String code;
+
+    @Column(nullable = false)
+    private String title;
+
+    private Double price;
+
+    private Boolean status;
 }

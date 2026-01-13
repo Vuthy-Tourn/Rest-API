@@ -21,7 +21,7 @@ pipeline {
                     docker stop springboot-cont || true
                     docker rm springboot-cont || true
 
-                    docker run -d -p 8081:8080 \
+                    docker run -d -p 8081:8081 \
                         --name springboot-cont \
                         jenkins-spring-pipeline
                 '''

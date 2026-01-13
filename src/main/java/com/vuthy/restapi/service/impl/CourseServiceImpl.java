@@ -20,113 +20,82 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<CourseResponse> getAllCourses(Boolean status) {
-
-        // filter by status
-        // mapping from course to courseResponse
-        List<CourseResponse> filteredCourses = courseRepository.getCourses()
+        return courseRepository.findByStatus(status)
                 .stream()
-                .filter(c-> c.getStatus().equals(status))
-                .map(c->CourseResponse.builder()
-                        .code(c.getCode())
-                        .title(c.getTitle())
-                        .price(c.getPrice())
-                        .status(c.getStatus())
-                        .build())
+                .map(this::mapToResponse)
                 .toList();
-
-        return filteredCourses;
     }
 
     @Override
     public List<CourseResponse> getCourses(Boolean status, String title) {
-        List<CourseResponse> searchCourses = courseRepository.getCourses()
+        return courseRepository.findByStatusAndTitleContainingIgnoreCase(status, title)
                 .stream()
-                .filter(c->c.getStatus().equals(status))
-                .filter(c->c.getTitle().toLowerCase().contains(title.toLowerCase()))
-                .map(c->CourseResponse.builder()
-                        .code(c.getCode())
-                        .title(c.getTitle())
-                        .price(c.getPrice())
-                        .status(c.getStatus())
-                        .build())
+                .map(this::mapToResponse)
                 .toList();
-        return searchCourses;
     }
 
     @Override
     public CourseResponse getCourseByCode(String code) {
-        CourseResponse filteredByCode = courseRepository.getCourses()
-                .stream()
-                .filter(c-> c.getCode().equals(code))
-                .map(c->CourseResponse.builder()
-                        .code(c.getCode())
-                        .title(c.getTitle())
-                        .price(c.getPrice())
-                        .status(c.getStatus())
-                        .build())
-                .findFirst()
-                .orElse(null);
-        return filteredByCode;
+        return courseRepository.findByCode(code)
+                .map(this::mapToResponse)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Course code doesn't exist"
+                ));
     }
 
     @Override
     public CourseResponse getCourseById(String id) {
-        CourseResponse filteredById = courseRepository.getCourses()
-                .stream()
-                .filter(c-> c.getId().equals(id))
-                .map(c->CourseResponse.builder()
-                        .code(c.getCode())
-                        .title(c.getTitle())
-                        .price(c.getPrice())
-                        .status(c.getStatus())
-                        .build())
-                .findFirst()
-                .orElse(null);
-        return filteredById;
+        Long courseId;
+        try {
+            courseId = Long.parseLong(id);
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid course id");
+        }
+
+        return courseRepository.findById(courseId)
+                .map(this::mapToResponse)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Course id doesn't exist"
+                ));
     }
 
     @Override
     public CourseResponse createCourse(CreateCourseRequest createCourseRequest) {
-        boolean isCourseExisted = courseRepository.getCourses()
-                .stream()
-                .anyMatch(course -> course.getCode().equals(createCourseRequest.code()));
-
-        if (isCourseExisted) {
-            // Conflict
+        boolean exists = courseRepository.findByCode(createCourseRequest.code()).isPresent();
+        if (exists) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Course already exists");
         }
 
-        // Map from dto to domain model
         Course course = Course.builder()
-                .id(UUID.randomUUID().toString())
                 .code(createCourseRequest.code())
                 .title(createCourseRequest.title())
                 .price(createCourseRequest.price())
                 .status(false)
                 .build();
 
-        courseRepository.getCourses().add(course);
+        Course saved = courseRepository.save(course);
 
-        // Return - map from domain model to dto
-        return CourseResponse.builder()
-                .code(course.getCode())
-                .title(course.getTitle())
-                .price(course.getPrice())
-                .status(false)
-                .build();
+        return mapToResponse(saved);
     }
 
     @Override
     public void deleteCourse(String code) {
-        boolean isCourseExisted = courseRepository.getCourses()
-                .stream()
-                .anyMatch(course -> course.getCode().equals(code));
+        Course course = courseRepository.findByCode(code)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Course code doesn't exist"
+                ));
 
-        if (!isCourseExisted) {
-            // Not found
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course code doesn't exist");
-        }
-        courseRepository.getCourses().removeIf(course->course.getCode().equals(code));
+        courseRepository.delete(course);
+    }
 
+    // Helper method to map entity to DTO
+    private CourseResponse mapToResponse(Course course) {
+        return CourseResponse.builder()
+                .code(course.getCode())
+                .title(course.getTitle())
+                .price(course.getPrice())
+                .status(course.getStatus())
+                .build();
     }
 }
+
